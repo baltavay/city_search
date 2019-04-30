@@ -1,24 +1,38 @@
 require 'dawg'
-module CitySearch
-  extend self
-  def search(q)
-    results = dawg.query(q)
+
+class CitySearch
+  def search(q, country = :all)
+    results = selected_country(country).query(q)
     results.map do |r|
       result = r.split(' ')
       code = result.last
       result.pop
-      result = result + states[code.to_i]
+      result += states[code.to_i]
     end
   end
 
   private
 
-  def dawg
-    @@dawg ||= Dawg.load(File.dirname(__FILE__) + '/../data/dawg.bin', :fast)
+  def selected_country(country = :all)
+    case country
+    when :russia
+      russia
+    else
+      all
+    end
+  end
+
+  def all
+    @all ||= Dawg.load(File.dirname(__FILE__) + '/../data/all.bin')
+  end
+
+  def russia
+    @russia ||= Dawg.load(File.dirname(__FILE__) + '/../data/russia.bin')
   end
 
   def states
-    @@states ||= Marshal.load(File.read(File.dirname(__FILE__) + '/../data/state-countries.bin'))
+    @states ||= Marshal.load(
+      File.read(File.dirname(__FILE__) + '/../data/state-countries.bin')
+    )
   end
-
 end
