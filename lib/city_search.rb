@@ -8,7 +8,7 @@ class CitySearch
   end
 
   def search(q)
-    results = db.query(q)
+    results = db.query(q).reject {|r| r.empty? }
     results.map do |r|
       result = r.split(' ')
       code = result.last
@@ -16,8 +16,6 @@ class CitySearch
       result += states[code.to_i]
     end
   end
-
-  private
 
   def country_exists?(country)
     File.exists?(File.dirname(__FILE__) + "/../data/#{country}.bin")
