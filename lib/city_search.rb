@@ -1,8 +1,14 @@
 require 'dawg'
 
 class CitySearch
-  def search(q, country = :all)
-    results = selected_country(country).query(q)
+  def initialize(country = :all)
+    raise 'country not found' unless country_exists?(country)
+
+    @country = country
+  end
+
+  def search(q)
+    results = db.query(q)
     results.map do |r|
       result = r.split(' ')
       code = result.last
@@ -13,26 +19,17 @@ class CitySearch
 
   private
 
-  def selected_country(country = :all)
-    case country
-    when :russia
-      russia
-    else
-      all
-    end
+  def country_exists?(country)
+    File.exists?(File.dirname(__FILE__) + "/../data/#{country}.bin")
   end
 
-  def all
-    @all ||= Dawg.load(File.dirname(__FILE__) + '/../data/all.bin')
-  end
-
-  def russia
-    @russia ||= Dawg.load(File.dirname(__FILE__) + '/../data/russia.bin')
+  def db
+    @all ||= Dawg.load(File.dirname(__FILE__) + "/../data/#{@country}.bin")
   end
 
   def states
     @states ||= Marshal.load(
-      File.read(File.dirname(__FILE__) + '/../data/state-countries.bin')
+      File.read(File.dirname(__FILE__) + "/../data/#{@country}_states.bin")
     )
   end
 end
