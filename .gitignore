@@ -1,2 +1,4 @@
 *.gem
-cities.txt
+GeoLite2-City-Locations-ru.csv
+russia.bin
+subdivisions.bin
