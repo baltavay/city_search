@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'city_search'
-  s.version     = '0.0.3'
+  s.version     = '0.0.4'
   s.date        = '2019-05-04'
   s.summary     = "City Search"
   s.description = "Finds cities"
